@@ -2,6 +2,7 @@ package org.ninto.garagemgr;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 
@@ -15,11 +16,13 @@ public class HomeActivity extends Activity {
 	}
 	
 	public void jumpToLogin(View view) {
-		
+		Intent intent = new Intent(this, LoginActivity.class);
+		startActivity(intent);
 	}
 	
 	public void jumpToLogout(View view) {
-		
+		Intent intent = new Intent(this, LogoutActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
