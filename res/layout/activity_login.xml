@@ -43,24 +43,25 @@
             android:orientation="vertical" >
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_email" />
+                android:hint="@string/prompt_name" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/carNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
+                android:hint="@string/prompt_carNumber"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified" />
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/prompt_phoneNumber"
                 android:ems="10" >
 
                 <requestFocus />
@@ -73,6 +74,7 @@
                 android:layout_marginTop="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
+                android:onClick="saveInfo"
                 android:text="@string/action_sign_in_register" />
 
         </LinearLayout>
