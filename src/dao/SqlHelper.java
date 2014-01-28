@@ -1,12 +1,13 @@
 package dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-class SqlHelper extends SQLiteOpenHelper {
+public class SqlHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "myDatabase.db";
 	private static final String DATABASE_TABLE = "GarageMgr";
@@ -27,14 +28,14 @@ class SqlHelper extends SQLiteOpenHelper {
 		}
 					// Called when no database exists in disk and the helper class needs
 					// to create a new one.
-					@Override
+	@Override
 	public void onCreate(SQLiteDatabase db) {
 			db.execSQL(DATABASE_CREATE);
 		}
 					//Called when there is a database version mismatch meaning that
 					//the version of the database on disk needs to be upgraded to
 					//the current version.
-					@Override
+	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion,int newVersion) {
 						//Log the version upgrade.
 			Log.w("TaskDBAdapter", "Upgrading from version " +
@@ -47,4 +48,20 @@ class SqlHelper extends SQLiteOpenHelper {
 						//Create a new one.
 						onCreate(db);
 					}
+	public static boolean insert(String name,String carNumber,String phoneNumber,String time){
+		// Create a new row of values to insert.
+		ContentValues newValues = new ContentValues();
+		// Assign values for each row.
+		newValues.put(NAME, name);
+		newValues.put(CAR_NUMBER, carNumber);
+		newValues.put(PHONE_NUMBER, phoneNumber);
+		newValues.put(TIME, time);
+		
+		SqlHelper helper = new SqlHelper(null, time, null, 0);
+		SQLiteDatabase db = helper.getWritableDatabase();
+		if(db.insert(SqlHelper.DATABASE_TABLE, null, newValues)==-1)
+				return false;
+		else return true;
+		
+	}
 	}
