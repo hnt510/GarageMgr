@@ -1,5 +1,7 @@
 package dao;
 
+import org.ninto.garagemgr.LoginActivity;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,12 +21,12 @@ public class SqlHelper extends SQLiteOpenHelper {
 	// SQL Statement to create a new database.
 	private static final String DATABASE_CREATE = "create table " +
 			DATABASE_TABLE + " (" + CAR_NUMBER +
-					" integer primary key, " +
-					NAME + " text not null, " +
-					PHONE_NUMBER + " integer, " +
-					TIME + " integer);";
-	public SqlHelper(Context context, String name,CursorFactory factory, int version) {
-			super(context, name, factory, version);
+					" TEXT primary key, " +
+					NAME + " TEXT not null, " +
+					PHONE_NUMBER + " TEXT, " +
+					TIME + " TEXT);";
+	public SqlHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 					// Called when no database exists in disk and the helper class needs
 					// to create a new one.
@@ -48,7 +50,7 @@ public class SqlHelper extends SQLiteOpenHelper {
 						//Create a new one.
 						onCreate(db);
 					}
-	public static boolean insert(String name,String carNumber,String phoneNumber,String time){
+	public boolean insert(String name,String carNumber,String phoneNumber,String time){
 		// Create a new row of values to insert.
 		ContentValues newValues = new ContentValues();
 		// Assign values for each row.
@@ -57,8 +59,9 @@ public class SqlHelper extends SQLiteOpenHelper {
 		newValues.put(PHONE_NUMBER, phoneNumber);
 		newValues.put(TIME, time);
 		
-		SqlHelper helper = new SqlHelper(null, time, null, 0);
-		SQLiteDatabase db = helper.getWritableDatabase();
+		//SqlHelper helper = new SqlHelper(null, time, null, 0);
+		SQLiteDatabase db = getWritableDatabase();
+		//db.execSQL("DROP TABLE IF EXISTS GarageMgr"); 
 		if(db.insert(SqlHelper.DATABASE_TABLE, null, newValues)==-1)
 				return false;
 		else return true;

@@ -11,9 +11,11 @@ import android.content.ContentValues;
 import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -26,6 +28,8 @@ public class LoginActivity extends Activity {
 	private EditText nameView;
 	private EditText carNumberView;
 	private EditText phoneNumberView;
+	
+	private SqlHelper helper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,7 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_login);
 		
-		
+		helper = new SqlHelper(this);
 
 	}
 
@@ -54,14 +58,29 @@ public class LoginActivity extends Activity {
 		
 		final String time=new SimpleDateFormat("ddHHmm").format(new Date());
 
-
+		final Handler mHandler = new Handler();
 		//db operation,we create a thread to handle it
 		Runnable doDbOperation = new Runnable() {
 			public void run() {
-				if(!SqlHelper.insert(name, carNumber, phoneNumber, time)){
-					AlertDialog.Builder builder = new Builder(LoginActivity.this);
-					builder.setMessage("Oops,something wrong...");
-					builder.create().show();
+				
+				if(helper.insert(name, carNumber, phoneNumber, time)){
+                    mHandler.post(new Runnable(){
+                    public void run(){
+    					Toast toast=Toast.makeText(getApplicationContext(), "成功保存", Toast.LENGTH_SHORT);  
+    					//显示toast信息  
+    					toast.show(); 
+                    }
+                    });
+
+				}else{
+                    mHandler.post(new Runnable(){
+                    public void run(){
+    					Toast toast=Toast.makeText(getApplicationContext(), "失败了", Toast.LENGTH_SHORT);  
+    					//显示toast信息  
+    					toast.show();
+                    }
+                    });
+
 				}
 			}
 		};
