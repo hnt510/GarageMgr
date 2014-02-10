@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -23,10 +22,10 @@ public class SqlHelper extends SQLiteOpenHelper {
 	// SQL Statement to create a new database.
 	private static final String DATABASE_CREATE = "create table " +
 			DATABASE_TABLE + " (" + CAR_NUMBER +
-					" TEXT primary key, " +
+					" TEXT, " +
 					NAME + " TEXT not null, " +
 					PHONE_NUMBER + " TEXT, " +
-					TIME + " TEXT);";
+					TIME + " TEXT primary key);";
 	public SqlHelper(Context context, int version) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -53,7 +52,8 @@ public class SqlHelper extends SQLiteOpenHelper {
 						onCreate(db);
 					}
 	
-	public boolean insert(String name,String carNumber,String phoneNumber,String time){
+	public boolean insert(String name,String carNumber,
+			String phoneNumber,String time) {
 		// Create a new row of values to insert.
 		ContentValues newValues = new ContentValues();
 		// Assign values for each row.
@@ -69,7 +69,8 @@ public class SqlHelper extends SQLiteOpenHelper {
 				return false;
 			else return true;
 		}
-	public Cursor query(String carNum) throws SQLException{
+	
+	public Cursor query(String carNum) throws SQLException {
 		// Specify the result column projection. Return the minimum set
 		// of columns required to satisfy your requirements.
 		String[] result_columns = new String[] {
@@ -90,4 +91,12 @@ public class SqlHelper extends SQLiteOpenHelper {
 		      }
 		return cursor;	
 		}
+	public int delete(String time) {
+		String where = TIME + "=" + time;
+		String whereArgs[] = null;
+		// Delete the rows that match the where clause.
+		SQLiteDatabase db = getWritableDatabase();
+		int a=db.delete(DATABASE_TABLE, where, whereArgs);
+		return a;
 	}
+}

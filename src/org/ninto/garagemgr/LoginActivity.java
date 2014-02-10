@@ -42,7 +42,7 @@ public class LoginActivity extends Activity {
 	}
 
 	/**
-	 * button onclick
+	 * button onclick saving things
 	 * @param view
 	 */
 	public void saveInfo(View view){
@@ -86,7 +86,6 @@ public class LoginActivity extends Activity {
 		};
 		Thread thread = new Thread(doDbOperation,"dbOperate");
 		thread.start();
-
 	}
 	
 	@Override
