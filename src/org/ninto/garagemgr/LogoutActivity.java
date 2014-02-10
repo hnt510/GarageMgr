@@ -84,7 +84,6 @@ public class LogoutActivity extends Activity {
         builder.setPositiveButton("交",  
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) {  
-                        try{
                         	if(helper.delete(time)==0){
             					Toast toast=Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT);  
             					//显示toast信息  
@@ -94,11 +93,6 @@ public class LogoutActivity extends Activity {
             					//显示toast信息  
             					toast.show();
                         	}
-                        }catch(SQLException e){
-        					Toast toast=Toast.makeText(getApplicationContext(), "数据库错误", Toast.LENGTH_SHORT);  
-        					//显示toast信息  
-        					toast.show();
-                        }  
                     }  
                 });  
         builder.setNeutralButton("不交",  

@@ -22,10 +22,10 @@ public class SqlHelper extends SQLiteOpenHelper {
 	// SQL Statement to create a new database.
 	private static final String DATABASE_CREATE = "create table " +
 			DATABASE_TABLE + " (" + CAR_NUMBER +
-					" TEXT, " +
+					" TEXT primary key, " +
 					NAME + " TEXT not null, " +
 					PHONE_NUMBER + " TEXT, " +
-					TIME + " TEXT primary key);";
+					TIME + " TEXT);";
 	public SqlHelper(Context context, int version) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -71,21 +71,11 @@ public class SqlHelper extends SQLiteOpenHelper {
 		}
 	
 	public Cursor query(String carNum) throws SQLException {
-		// Specify the result column projection. Return the minimum set
-		// of columns required to satisfy your requirements.
-		String[] result_columns = new String[] {
-				CAR_NUMBER, NAME, PHONE_NUMBER, TIME};
-		// Specify the where clause that will limit our results.
-		String where = CAR_NUMBER + "=" + carNum;
-		// Replace these with valid SQL statements as necessary.
-		String whereArgs[] = null;
-		String groupBy = null;
-		String having = null;
-		String order = null;
+		StringBuffer bfr=new StringBuffer(carNum);
+		bfr.insert(0, "'"); bfr.append("'");
 		SQLiteDatabase db = getWritableDatabase();
-		Cursor cursor = db.query(DATABASE_TABLE,
-				result_columns, where,
-				whereArgs, groupBy, having, order);
+		Cursor cursor = db.rawQuery("select * " +
+				"from GarageMgr where CAR_NUMBER=" + bfr, null);
 		if(cursor != null) {
 			   cursor.moveToFirst();
 		      }
