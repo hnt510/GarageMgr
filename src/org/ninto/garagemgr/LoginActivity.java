@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -37,8 +38,7 @@ public class LoginActivity extends Activity {
 
 		setContentView(R.layout.activity_login);
 		
-		helper = new SqlHelper(this);
-
+		helper = new SqlHelper(this, 0);
 	}
 
 	/**
@@ -61,8 +61,7 @@ public class LoginActivity extends Activity {
 		final Handler mHandler = new Handler();
 		//db operation,we create a thread to handle it
 		Runnable doDbOperation = new Runnable() {
-			public void run() {
-				
+			public void run() {				
 				if(helper.insert(name, carNumber, phoneNumber, time)){
                     mHandler.post(new Runnable(){
                     public void run(){
@@ -71,7 +70,9 @@ public class LoginActivity extends Activity {
     					toast.show(); 
                     }
                     });
-
+                    //jump
+					Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+					startActivity(intent);
 				}else{
                     mHandler.post(new Runnable(){
                     public void run(){
@@ -80,12 +81,12 @@ public class LoginActivity extends Activity {
     					toast.show();
                     }
                     });
-
 				}
 			}
 		};
 		Thread thread = new Thread(doDbOperation,"dbOperate");
 		thread.start();
+
 	}
 	
 	@Override

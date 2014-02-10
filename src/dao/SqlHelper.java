@@ -4,6 +4,8 @@ import org.ninto.garagemgr.LoginActivity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -25,7 +27,7 @@ public class SqlHelper extends SQLiteOpenHelper {
 					NAME + " TEXT not null, " +
 					PHONE_NUMBER + " TEXT, " +
 					TIME + " TEXT);";
-	public SqlHelper(Context context) {
+	public SqlHelper(Context context, int version) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 					// Called when no database exists in disk and the helper class needs
@@ -50,6 +52,7 @@ public class SqlHelper extends SQLiteOpenHelper {
 						//Create a new one.
 						onCreate(db);
 					}
+	
 	public boolean insert(String name,String carNumber,String phoneNumber,String time){
 		// Create a new row of values to insert.
 		ContentValues newValues = new ContentValues();
@@ -64,7 +67,27 @@ public class SqlHelper extends SQLiteOpenHelper {
 		//db.execSQL("DROP TABLE IF EXISTS GarageMgr"); 
 		if(db.insert(SqlHelper.DATABASE_TABLE, null, newValues)==-1)
 				return false;
-		else return true;
-		
-	}
+			else return true;
+		}
+	public Cursor query(String carNum) throws SQLException{
+		// Specify the result column projection. Return the minimum set
+		// of columns required to satisfy your requirements.
+		String[] result_columns = new String[] {
+				CAR_NUMBER, NAME, PHONE_NUMBER, TIME};
+		// Specify the where clause that will limit our results.
+		String where = CAR_NUMBER + "=" + carNum;
+		// Replace these with valid SQL statements as necessary.
+		String whereArgs[] = null;
+		String groupBy = null;
+		String having = null;
+		String order = null;
+		SQLiteDatabase db = getWritableDatabase();
+		Cursor cursor = db.query(DATABASE_TABLE,
+				result_columns, where,
+				whereArgs, groupBy, having, order);
+		if(cursor != null) {
+			   cursor.moveToFirst();
+		      }
+		return cursor;	
+		}
 	}
