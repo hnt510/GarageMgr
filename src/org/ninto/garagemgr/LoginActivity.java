@@ -2,6 +2,10 @@ package org.ninto.garagemgr;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+
+import util.SendSMSTask;
+
 import dao.*;
 
 import android.app.Activity;
@@ -68,11 +72,13 @@ public class LoginActivity extends Activity {
     					Toast toast=Toast.makeText(getApplicationContext(), "成功保存", Toast.LENGTH_SHORT);  
     					//显示toast信息  
     					toast.show(); 
+    					Timer timer = new Timer();
+    					timer.schedule(new SendSMSTask(phoneNumber), 10000);
                     }
                     });
                     //jump
-					Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-					startActivity(intent);
+            		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            		startActivity(intent);
 				}else{
                     mHandler.post(new Runnable(){
                     public void run(){
@@ -86,6 +92,7 @@ public class LoginActivity extends Activity {
 		};
 		Thread thread = new Thread(doDbOperation,"dbOperate");
 		thread.start();
+
 	}
 	
 	@Override
