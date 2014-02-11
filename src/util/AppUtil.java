@@ -7,9 +7,9 @@ public class AppUtil {
 	 * 发送短信
 	 * @param sendTo 
 	 */
-	public static void sendReminder(String sendTo) {
+	public static void sendReminder(String sendTo,String carnum) {
 		SmsManager smsManager = SmsManager.getDefault();
-		String myMessage = "您的停车时间已经快到2个小时了！";
+		String myMessage = "车牌号为"+carnum+"的车主"+"您的停车时间已经到2个小时了！";
 		smsManager.sendTextMessage(sendTo, null, myMessage, null, null);
 	}
 	/**

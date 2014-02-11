@@ -5,13 +5,15 @@ import java.util.TimerTask;
 
 public class SendSMSTask extends TimerTask {
 	String sendTo;
-	public SendSMSTask(String PHONE_NUMBER){
+	String carnum;
+	public SendSMSTask(String PHONE_NUMBER,String CAR_NUMBER){
 		sendTo=PHONE_NUMBER;
+		carnum=CAR_NUMBER;
 	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		AppUtil.sendReminder(sendTo);
+		AppUtil.sendReminder(sendTo,carnum);
 	}
 
 }

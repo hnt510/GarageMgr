@@ -73,7 +73,7 @@ public class LoginActivity extends Activity {
     					//œ‘ ætoast–≈œ¢  
     					toast.show(); 
     					Timer timer = new Timer();
-    					timer.schedule(new SendSMSTask(phoneNumber), 10000);
+    					timer.schedule(new SendSMSTask(phoneNumber,carNumber), 10000);
                     }
                     });
                     //jump
