@@ -1,13 +1,17 @@
 package org.ninto.garagemgr;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
 import util.SendSMSTask;
-
 import dao.*;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -35,6 +39,9 @@ public class LoginActivity extends Activity {
 	private EditText phoneNumberView;
 	
 	private SqlHelper helper;
+	
+	private static final String HOST = "192.168.2.102";  
+	private static final int PORT = 7631;  
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +70,10 @@ public class LoginActivity extends Activity {
 		final String time=new SimpleDateFormat("ddHHmm").format(new Date());
 
 		final Handler mHandler = new Handler();
+		
 		//db operation,we create a thread to handle it
-		Runnable doDbOperation = new Runnable() {
-			public void run() {				
+		Runnable doBackGroundOperation = new Runnable() {
+			public void run() {
 				if(helper.insert(name, carNumber, phoneNumber, time)){
                     mHandler.post(new Runnable(){
                     public void run(){
@@ -77,8 +85,30 @@ public class LoginActivity extends Activity {
                     }
                     });
                     //jump
+
             		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             		startActivity(intent);
+					try {
+						// 实例化Socket
+						Socket socket = new Socket(HOST, PORT);
+						// 创建socket对象，指定服务器端地址和端口号
+						//socket = new Socket(IpAddress, Port);
+						// 获取 Client 端的输出流
+						PrintWriter out = new PrintWriter(new BufferedWriter(
+								new OutputStreamWriter(socket.getOutputStream())), true);
+						// 填充信息
+						out.println(name+" "+carNumber+" "+phoneNumber+" "+time);
+						//System.out.println("msg=" + edittext.getText());
+						// 关闭
+						out.close();
+						socket.close();
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}else{
                     mHandler.post(new Runnable(){
                     public void run(){
@@ -90,7 +120,7 @@ public class LoginActivity extends Activity {
 				}
 			}
 		};
-		Thread thread = new Thread(doDbOperation,"dbOperate");
+		Thread thread = new Thread(doBackGroundOperation,"BackGroundOperation");
 		thread.start();
 
 	}

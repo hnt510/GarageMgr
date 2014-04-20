@@ -2,6 +2,8 @@ package util;
 
 import java.util.TimerTask;
 
+import android.widget.Toast;
+
 
 public class SendSMSTask extends TimerTask {
 	String sendTo;
@@ -13,7 +15,7 @@ public class SendSMSTask extends TimerTask {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		AppUtil.sendReminder(sendTo,carnum);
+		if(AppUtil.isValidMobile(sendTo)){
+		AppUtil.sendReminder(sendTo,carnum);}
 	}
-
 }
