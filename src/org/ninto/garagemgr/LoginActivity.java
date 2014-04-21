@@ -40,7 +40,7 @@ public class LoginActivity extends Activity {
 	
 	private SqlHelper helper;
 	
-	private static final String HOST = "192.168.2.102";  
+	private static final String HOST = "192.168.43.102";  
 	private static final int PORT = 7631;  
 
 	@Override

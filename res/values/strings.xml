@@ -4,8 +4,8 @@
     <string name="app_name">GarageMgr</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="GraIn">进</string>
-    <string name="GraOut">出</string>
+    <string name="GraIn">我要进库</string>
+    <string name="GraOut">我要出库</string>
     <string name="title_activity_logout">LogoutActivity</string>
 
 </resources>

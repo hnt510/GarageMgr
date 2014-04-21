@@ -34,6 +34,7 @@ public class AppUtil {
 	 * @param mobile
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	public static boolean isValidMobile(String mobile){
 		String MOBILE = "^1(3[0-9]|5[0-35-9]|8[025-9])\\d{8}$";
 		String CM = "^1(34[0-8]|(3[5-9]|5[017-9]|8[278])\\d)\\d{7}$";

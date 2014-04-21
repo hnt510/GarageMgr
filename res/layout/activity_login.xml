@@ -62,9 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_phoneNumber"
-                android:ems="10" >
-
-                <requestFocus />
+                android:numeric="integer"
+                android:ems="10" > 
             </EditText>
 
             <Button
