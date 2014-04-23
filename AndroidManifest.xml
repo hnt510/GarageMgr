@@ -33,6 +33,7 @@
             android:name="org.ninto.garagemgr.LogoutActivity"
             android:label="@string/title_activity_logout" >
         </activity>        
+        <service android:name=".SocketServer" />
     </application>
 
 </manifest>

@@ -46,6 +46,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="13"
                 android:hint="@string/prompt_name" />
 
             <EditText
@@ -54,12 +55,14 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_carNumber"
                 android:imeActionId="@+id/login"
+                android:maxLength="13"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified" />
 
             <EditText
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
+                android:maxLength="13"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_phoneNumber"
                 android:numeric="integer"

@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">GarageMgr</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Change Server IP Adress</string>
     <string name="hello_world">Hello world!</string>
     <string name="GraIn">我要进库</string>
     <string name="GraOut">我要出库</string>
