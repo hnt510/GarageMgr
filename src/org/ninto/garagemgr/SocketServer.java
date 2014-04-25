@@ -131,6 +131,12 @@ public class SocketServer extends Service{
                     workHandler.post(new Runnable() {
                         @Override
                         public void run() {
+                        	try {
+                        		clientSocket.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
                         	String [] split=inputString.split("EOF");
                         	usr.NAME=split[0];
                         	usr.CAR_NUMBER=split[1];
