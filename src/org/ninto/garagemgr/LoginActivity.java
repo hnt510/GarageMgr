@@ -13,12 +13,7 @@ import java.util.Timer;
 import util.SendSMSTask;
 import dao.*;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -71,21 +66,20 @@ public class LoginActivity extends Activity {
 
 		final Handler mHandler = new Handler();
 		
-		//db operation,we create a thread to handle it
+		//db and network operation,we create a thread to handle it
 		Runnable doBackGroundOperation = new Runnable() {
 			public void run() {
 				if(helper.insert(name, carNumber, phoneNumber, time)){
                     mHandler.post(new Runnable(){
                     public void run(){
-    					Toast toast=Toast.makeText(getApplicationContext(), "成功保存", Toast.LENGTH_SHORT);  
+    					Toast toast=Toast.makeText(getApplicationContext(), "汽车已入库", Toast.LENGTH_SHORT);  
     					//显示toast信息  
     					toast.show(); 
     					Timer timer = new Timer();
     					timer.schedule(new SendSMSTask(phoneNumber,carNumber), 10000);
                     }
                     });
-                    //jump
-
+                    //jump to HomeActivity
             		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             		startActivity(intent);
 					try {
@@ -97,7 +91,7 @@ public class LoginActivity extends Activity {
 						PrintWriter out = new PrintWriter(new BufferedWriter(
 								new OutputStreamWriter(socket.getOutputStream())), true);
 						// 填充信息
-						out.println(name+"EOF"+carNumber+"EOF"+phoneNumber+"EOF"+time);
+						out.println(name+"EOF"+carNumber+"EOF"+phoneNumber+"EOF"+time+"EOF"+"IN");
 						//System.out.println("msg=" + edittext.getText());
 						// 关闭
 						out.close();
@@ -113,7 +107,7 @@ public class LoginActivity extends Activity {
 				}else{
                     mHandler.post(new Runnable(){
                     public void run(){
-    					Toast toast=Toast.makeText(getApplicationContext(), "失败了", Toast.LENGTH_SHORT);  
+    					Toast toast=Toast.makeText(getApplicationContext(), "数据处理失败", Toast.LENGTH_SHORT);  
     					//显示toast信息  
     					toast.show();
                     }

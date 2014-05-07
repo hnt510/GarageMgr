@@ -3,8 +3,11 @@ package util;
 import java.util.TimerTask;
 
 import android.widget.Toast;
-
-
+/**
+ * SMS sender timer
+ * @author ninteo
+ *
+ */
 public class SendSMSTask extends TimerTask {
 	String sendTo;
 	String carnum;

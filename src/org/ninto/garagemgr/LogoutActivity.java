@@ -1,7 +1,15 @@
 package org.ninto.garagemgr;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.ninto.garagemgr.SocketServer.UdpRunnable;
 
 import util.AppUtil;
 import dao.SqlHelper;
@@ -12,23 +20,35 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
+/**
+ * Car comes out activity
+ * @author ninteo
+ *
+ */
 public class LogoutActivity extends Activity {
 
 	private static final String CAR_NUMBER = "CAR_NUMBER";
 	private static final String NAME = "NAME";
 	private static final String PHONE_NUMBER = "PHONE_NUMBER";
 	private static final String TIME = "TIME";
+	private static final String HOST = "192.168.43.102";  
+	private static final int PORT = 7631;  
 	
 	private EditText carNumberView;
 	private SqlHelper helper;
 	
+	class User{
+		String name;
+		String phoneNum;
+		String carNum;
+		String time;
+	}
+	
+	public User usr= new User();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,21 +57,27 @@ public class LogoutActivity extends Activity {
 		helper = new SqlHelper(this, 0); 
 	}
 
-	//main logic
+	//button onclick
 	public void checkUserFee(View view){
 		carNumberView=(EditText)findViewById(R.id.carLogout);
 		String carNumber=carNumberView.getText().toString();
-		String time;
 		try{
 			Cursor cur=helper.query(carNumber);
-			//get parking time out
+			//work parking time out
+				int NAME_COLUMN_INDEX = cur.getColumnIndex(NAME);
+				int CARNUM__COLUMN_INDEX=cur.getColumnIndex(CAR_NUMBER);
+				int PHONENUM_COLUMN_INDEX=cur.getColumnIndex(PHONE_NUMBER);
 				int TIME_COLUMN_INDEX = cur.getColumnIndexOrThrow(TIME);
 				try{
-					time = cur.getString(TIME_COLUMN_INDEX);					
-					//calculate parking fees
+					usr.name=cur.getString(NAME_COLUMN_INDEX);
+					usr.carNum=cur.getString(CARNUM__COLUMN_INDEX);
+					usr.phoneNum=cur.getString(PHONENUM_COLUMN_INDEX);
+					usr.time = cur.getString(TIME_COLUMN_INDEX);					
+					//calculate parking time
 					int duration=AppUtil.convertTime(new SimpleDateFormat("ddHHmm").format(new Date())) 
-							- AppUtil.convertTime(time);
-					showFeeDialog(LogoutActivity.this, duration, time);
+							- AppUtil.convertTime(usr.time);
+					//logout dialog
+					showFeeDialog(LogoutActivity.this, duration, usr.time);
 				}catch(Exception e){
 					Toast toast=Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);  
 					//显示toast信息  
@@ -65,9 +91,40 @@ public class LogoutActivity extends Activity {
 	}
 	}
 	
+	public class SendRunnable implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			try {
+				// 实例化Socket
+				Socket socket = new Socket(HOST, PORT);
+				// 创建socket对象，指定服务器端地址和端口号
+				//socket = new Socket(IpAddress, Port);
+				// 获取 Client 端的输出流
+				PrintWriter out = new PrintWriter(new BufferedWriter(
+						new OutputStreamWriter(socket.getOutputStream())), true);
+				// 填充信息
+				out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+"EOF"+usr.time+"EOF"+"OUT");
+				//System.out.println("msg=" + edittext.getText());
+				// 关闭
+				out.close();
+				socket.shutdownOutput();
+				socket.close();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
     private void showFeeDialog(Context context,int duration,final String time) {  
         AlertDialog.Builder builder = new AlertDialog.Builder(context);   
-        builder.setTitle("交钱");  
+        builder.setTitle("总停车费用");  
+        //calculate fee
 		if(duration<=60){
 			double fee= duration*0.1;
 			builder.setMessage("您目前已停"+String.valueOf(duration)
@@ -81,21 +138,24 @@ public class LogoutActivity extends Activity {
 			builder.setMessage("您目前已停"+String.valueOf(duration)
 					+"分钟，需要交"+String.valueOf(fee)+"元");
 		} 
-        builder.setPositiveButton("交",  
+    	//delete user info in database
+        builder.setPositiveButton("我要出库",  
                 new DialogInterface.OnClickListener() {  
-                    public void onClick(DialogInterface dialog, int whichButton) {  
+                    public void onClick(DialogInterface dialog, int whichButton) { 
                         	if(helper.delete(time)==0){
             					Toast toast=Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT);  
             					//显示toast信息  
             					toast.show();
                         	}else{
-                        		Toast toast=Toast.makeText(getApplicationContext(), "你可以闪了", Toast.LENGTH_SHORT);  
+                        		Toast toast=Toast.makeText(getApplicationContext(), "汽车已出库", Toast.LENGTH_SHORT);  
             					//显示toast信息  
             					toast.show();
                         	}
+                    		new Thread(new SendRunnable()).start();
                     }  
                 });  
-        builder.setNeutralButton("不交",  
+        //do nothing
+        builder.setNeutralButton("暂时不出库",  
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) {   
                     }  

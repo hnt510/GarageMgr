@@ -5,6 +5,11 @@ import java.util.regex.Pattern;
 
 import android.telephony.SmsManager;
 
+/**
+ * Application utility
+ * @author ninteo
+ *
+ */
 public class AppUtil {
 	/**
 	 * ·¢ËÍ¶ÌÐÅ
@@ -17,7 +22,7 @@ public class AppUtil {
 		smsManager.sendTextMessage(sendTo, null, myMessage, null, null);
 	}
 	/**
-	 * convert to total minutes
+	 * convert parking time
 	 * @param time
 	 * @return total minutes that the String time represent
 	 */

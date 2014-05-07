@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GarageMgr</string>
-    <string name="action_settings">Change Server IP Adress</string>
+    <string name="app_name">车库管理手机端</string>
+    <string name="action_settings">更改服务端IP地址</string>
     <string name="hello_world">Hello world!</string>
     <string name="GraIn">我要进库</string>
     <string name="GraOut">我要出库</string>
-    <string name="title_activity_logout">LogoutActivity</string>
+    <string name="title_activity_logout">汽车出库</string>
 
 </resources>

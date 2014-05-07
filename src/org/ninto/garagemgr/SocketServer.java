@@ -1,17 +1,16 @@
 package org.ninto.garagemgr;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URLDecoder;
-
+import java.net.SocketException;
+import dao.SqlHelper;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -22,14 +21,23 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
+/**
+ * network listener service
+ * @author ninteo
+ *
+ */
 public class SocketServer extends Service{
 	
 	private static final int PORT = 24358; 
 	private Socket clientSocket = null;
     private ServerSocket serverSocket = null;
     private Handler workHandler = new Handler();
+    private SqlHelper helper;
+    private byte[] msg = new byte[12000];
     
+    //User data structure
     class User{
         public String NAME;
         public String CAR_NUMBER;
@@ -37,16 +45,60 @@ public class SocketServer extends Service{
         public String TIME;
     }
     
-    User usr=new User();
-    
     @Override
     public void onCreate() {    
         startSocketServer();
+        startUdpServer();
+        helper = new SqlHelper(this, 0); 
         super.onCreate();
     }
 
 
-    @Override
+    public void startUdpServer() {
+		// TODO Auto-generated method stub
+    	new Thread(new UdpRunnable()).start();
+	}
+
+    public class UdpRunnable implements Runnable{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			DatagramSocket dSocket = null;
+			DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
+			String inputString = null;
+			User usr = new User();
+			try {
+				dSocket = new DatagramSocket(23654);
+				while (true) {
+					try {
+						dSocket.receive(dPacket);
+						inputString = new String(dPacket.getData());
+						usr = extractUser(inputString);
+						final String TIME = usr.TIME;
+						notifyUser(usr);
+						workHandler.post(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								deleteUser(TIME);
+							}
+							
+						});
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+		}
+    	
+    }
+
+	@Override
     public void onDestroy() {
         //startSocketServer();
         //helperListener = null;
@@ -59,19 +111,14 @@ public class SocketServer extends Service{
     public void startSocketServer() {
         
             try {
-                /**
-                 * 启动ServerSocket
-                 */
+            	//start listen on PORT
                 serverSocket = new ServerSocket(PORT);
                     
             } catch (IOException e) {
                 e.printStackTrace();
             }
             
-            
-            /**
-             * Accept Socket
-             */
+            //start a new thread to listen
             new Thread(new AcceptRunnable()).start();
         
     }
@@ -119,7 +166,7 @@ public class SocketServer extends Service{
         public void run() {
             while (runnable) {
                 try {
-
+                	//read user info from clientSocket's inputeStream
                 	read = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     inputString = read.readLine();
                     runnable=false;
@@ -137,22 +184,34 @@ public class SocketServer extends Service{
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-                        	String [] split=inputString.split("EOF");
-                        	usr.NAME=split[0];
-                        	usr.CAR_NUMBER=split[1];
-                        	usr.PHONE_NUMBER=split[2];
-                        	usr.TIME=split[3];
-                        	notifyUser();
+                        	
+                            User usr=new User();
+                        	usr = extractUser(inputString);
+                        	//show notification
+                        	notifyUser(usr);
+                        	//delete user info in database
+                        	deleteUser(usr.TIME);
                         }
-
                     });
                 }
             }
         }
     
+    private User extractUser(String inputString){
+        User usr=new User();
+    	//extract user info
+    	String [] split=inputString.split("EOF");
+    	usr.NAME=split[0];
+    	usr.CAR_NUMBER=split[1];
+    	usr.PHONE_NUMBER=split[2];
+    	usr.TIME=split[3].substring(0, 6);
+    	return usr;
+    	
+    }
+    
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@SuppressLint("NewApi")
-	private void notifyUser() {
+	private void notifyUser(User usr) {
 		// TODO Auto-generated method stub
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
@@ -188,6 +247,19 @@ public class SocketServer extends Service{
 		// mId allows you to update the notification later on.
 		mBuilder.setStyle(inboxStyle);
 		mNotificationManager.notify(510, mBuilder.build());
+	}
+	
+	private void deleteUser(String time) {
+		// TODO Auto-generated method stub
+    	if(helper.delete(time)==0){
+			Toast toast=Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT);  
+			//显示toast信息  
+			toast.show();
+    	}else{
+    		Toast toast=Toast.makeText(getApplicationContext(), "汽车已出库", Toast.LENGTH_SHORT);  
+			//显示toast信息  
+			toast.show();
+    	}
 	}
     
 	@Override

@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 
+/**
+ * main user interface
+ * @author ninteo
+ *
+ */
 public class HomeActivity extends Activity {
 
 	@Override
