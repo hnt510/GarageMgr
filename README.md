@@ -16,7 +16,7 @@ GarageMgr
 
 5.汽车出库，车主数据删除(worked)
 
-6.电脑和客户端互相控制(still working on it)
+6.电脑和客户端互相控制(finished but haven't been tested)
 
 实现方法
 =======
