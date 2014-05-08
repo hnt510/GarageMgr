@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.view.Menu;
@@ -35,12 +36,13 @@ public class LogoutActivity extends Activity {
 	private static final String NAME = "NAME";
 	private static final String PHONE_NUMBER = "PHONE_NUMBER";
 	private static final String TIME = "TIME";
-	private static final String HOST = "192.168.43.102";  
+	private static final String DEFAULT_HOST = "192.168.43.102";  
 	private static final int PORT = 7631;  
+	private static final String SERVER_IP="SERVER_IP"; 
 	
 	private EditText carNumberView;
 	private SqlHelper helper;
-	
+	private String host=null;
 	class User{
 		String name;
 		String phoneNum;
@@ -53,7 +55,8 @@ public class LogoutActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_logout);
-		
+		SharedPreferences settings = getSharedPreferences("ip_setting", 0);
+		host = settings.getString(SERVER_IP, "NOT EXIST");
 		helper = new SqlHelper(this, 0); 
 	}
 
@@ -77,7 +80,7 @@ public class LogoutActivity extends Activity {
 					int duration=AppUtil.convertTime(new SimpleDateFormat("ddHHmm").format(new Date())) 
 							- AppUtil.convertTime(usr.time);
 					//logout dialog
-					showFeeDialog(LogoutActivity.this, duration, usr.time);
+					showFeeDialog(LogoutActivity.this, duration, usr.carNum);
 				}catch(Exception e){
 					Toast toast=Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);  
 					//显示toast信息  
@@ -98,7 +101,12 @@ public class LogoutActivity extends Activity {
 			// TODO Auto-generated method stub
 			try {
 				// 实例化Socket
-				Socket socket = new Socket(HOST, PORT);
+				Socket socket = null;
+				if(host=="NOT EXIST"){
+					socket = new Socket(DEFAULT_HOST, PORT);
+				}else{
+					socket = new Socket(host, PORT);
+				}
 				// 创建socket对象，指定服务器端地址和端口号
 				//socket = new Socket(IpAddress, Port);
 				// 获取 Client 端的输出流
@@ -121,7 +129,7 @@ public class LogoutActivity extends Activity {
 		}
 		
 	}
-    private void showFeeDialog(Context context,int duration,final String time) {  
+    private void showFeeDialog(Context context,int duration,final String carNum) {  
         AlertDialog.Builder builder = new AlertDialog.Builder(context);   
         builder.setTitle("总停车费用");  
         //calculate fee
@@ -142,7 +150,7 @@ public class LogoutActivity extends Activity {
         builder.setPositiveButton("我要出库",  
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) { 
-                        	if(helper.delete(time)==0){
+                        	if(helper.delete(carNum)==0){
             					Toast toast=Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT);  
             					//显示toast信息  
             					toast.show();

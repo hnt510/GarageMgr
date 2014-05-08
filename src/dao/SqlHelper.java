@@ -104,9 +104,9 @@ public class SqlHelper extends SQLiteOpenHelper {
 	 * @param time
 	 * @return
 	 */
-	public int delete(String time) {
+	public int delete(String carNum) {
 		int returnNum=0;
-		String where = TIME + "='" + time +"'";
+		String where = CAR_NUMBER + "='" + carNum +"'";
 		String whereArgs[] = null;
 		// Delete the rows that match the where clause.
 		SQLiteDatabase db = getWritableDatabase();

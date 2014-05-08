@@ -75,14 +75,14 @@ public class SocketServer extends Service{
 						dSocket.receive(dPacket);
 						inputString = new String(dPacket.getData());
 						usr = extractUser(inputString);
-						final String TIME = usr.TIME;
+						final String carNum = usr.CAR_NUMBER;
 						notifyUser(usr);
 						workHandler.post(new Runnable(){
 
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								deleteUser(TIME);
+								deleteUser(carNum);
 							}
 							
 						});
@@ -190,7 +190,7 @@ public class SocketServer extends Service{
                         	//show notification
                         	notifyUser(usr);
                         	//delete user info in database
-                        	deleteUser(usr.TIME);
+                        	deleteUser(usr.CAR_NUMBER);
                         }
                     });
                 }
@@ -249,9 +249,9 @@ public class SocketServer extends Service{
 		mNotificationManager.notify(510, mBuilder.build());
 	}
 	
-	private void deleteUser(String time) {
+	private void deleteUser(String carNum) {
 		// TODO Auto-generated method stub
-    	if(helper.delete(time)==0){
+    	if(helper.delete(carNum)==0){
 			Toast toast=Toast.makeText(getApplicationContext(), "…æ≥˝ ß∞‹", Toast.LENGTH_SHORT);  
 			//œ‘ ætoast–≈œ¢  
 			toast.show();

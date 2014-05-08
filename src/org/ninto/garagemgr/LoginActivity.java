@@ -14,6 +14,7 @@ import util.SendSMSTask;
 import dao.*;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -35,15 +36,18 @@ public class LoginActivity extends Activity {
 	
 	private SqlHelper helper;
 	
-	private static final String HOST = "192.168.43.102";  
+	private static final String DEFAULT_HOST = "192.168.43.102";  
 	private static final int PORT = 7631;  
+	private static final String SERVER_IP="SERVER_IP"; 
+	private String host=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
-		
+		SharedPreferences settings = getSharedPreferences("ip_setting", 0);
+		host = settings.getString(SERVER_IP, "NOT EXIST");
 		helper = new SqlHelper(this, 0);
 	}
 
@@ -84,7 +88,12 @@ public class LoginActivity extends Activity {
             		startActivity(intent);
 					try {
 						// 实例化Socket
-						Socket socket = new Socket(HOST, PORT);
+						Socket socket=null;
+						if(host=="NOT EXIST"){
+								socket = new Socket(DEFAULT_HOST, PORT);
+							}else{
+								socket = new Socket(host, PORT);
+							}
 						// 创建socket对象，指定服务器端地址和端口号
 						//socket = new Socket(IpAddress, Port);
 						// 获取 Client 端的输出流
