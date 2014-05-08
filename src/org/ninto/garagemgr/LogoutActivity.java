@@ -82,7 +82,7 @@ public class LogoutActivity extends Activity {
 					//logout dialog
 					showFeeDialog(LogoutActivity.this, duration, usr.carNum);
 				}catch(Exception e){
-					Toast toast=Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT);  
+					Toast toast=Toast.makeText(getApplicationContext(), "未找到该车主信息", Toast.LENGTH_SHORT);  
 					//显示toast信息  
 					toast.show(); 
 				}

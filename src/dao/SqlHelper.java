@@ -99,6 +99,12 @@ public class SqlHelper extends SQLiteOpenHelper {
 		return cursor;	
 		}
 	
+	public Cursor query_all() throws SQLException{
+		SQLiteDatabase db = getWritableDatabase();
+		Cursor cursor = db.rawQuery("select * " +
+				"from GarageMgr", null);
+		return cursor;	
+	}
 	/**
 	 * delete user
 	 * @param time

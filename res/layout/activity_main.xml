@@ -27,4 +27,14 @@
         android:onClick="jumpToLogin"
         android:text="@string/GraIn" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/button2"
+        android:layout_marginBottom="32dp"
+        android:onClick="showCard"
+        android:text="Button" />
+
 </RelativeLayout>

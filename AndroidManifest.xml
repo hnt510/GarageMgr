@@ -33,6 +33,10 @@
         <activity
             android:name="org.ninto.garagemgr.LogoutActivity"
             android:label="@string/title_activity_logout" >
+        </activity>  
+        <activity
+            android:name="org.ninto.garagemgr.GoogleCardHomeActivity"
+            android:label="@string/app_name" >
         </activity>        
         <service android:name=".SocketServer" />
     </application>

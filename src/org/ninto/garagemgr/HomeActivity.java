@@ -42,6 +42,11 @@ public class HomeActivity extends Activity {
 		Intent intent = new Intent(this, LogoutActivity.class);
 		startActivity(intent);
 	}
+	
+	public void showCard(View view) {
+		Intent intent = new Intent(this, GoogleCardHomeActivity.class);
+		startActivity(intent);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
