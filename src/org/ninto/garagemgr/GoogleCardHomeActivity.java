@@ -82,7 +82,7 @@ import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAni
 
 import dao.SqlHelper;
 
-public class GoogleCardHomeActivity extends Activity implements OnDismissCallback {
+public class GoogleCardHomeActivity extends Activity {
 
 	private static final String CAR_NUMBER = "CAR_NUMBER";
 	private static final String NAME = "NAME";
@@ -176,12 +176,12 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 					userList.add(usr);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			Log.e("SQLERROR","Query Execute Error!");
 		}
 		ListView listView = (ListView) findViewById(R.id.activity_googlecards_listview);
 
 		mGoogleCardsAdapter = new GoogleCardsAdapter(this,userList);
-		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(new SwipeDismissAdapter(mGoogleCardsAdapter, this));
+		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(mGoogleCardsAdapter);
 		swingBottomInAnimationAdapter.setInitialDelayMillis(300);
 		swingBottomInAnimationAdapter.setAbsListView(listView);
 
@@ -192,6 +192,12 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 		Intent intent = new Intent(this, SocketServer.class);
 		startService(intent);
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+	}
 
 	private ArrayList<Integer> getItems() {
 		ArrayList<Integer> items = new ArrayList<Integer>();
@@ -201,12 +207,6 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 		return items;
 	}
 
-	@Override
-	public void onDismiss(final AbsListView listView, final int[] reverseSortedPositions) {
-		for (int position : reverseSortedPositions) {
-			mGoogleCardsAdapter.remove(position);
-		}
-	}
 
 	private static class GoogleCardsAdapter extends ArrayAdapter<Integer> {
 
@@ -351,16 +351,7 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 	    }
 
 	    private void selectItem(int position) {
-	        // update the main content by replacing fragments
-	        //Fragment fragment = new PlanetFragment();
-	        //Bundle args = new Bundle();
-	        //args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-	        //fragment.setArguments(args);
 
-	        //FragmentManager fragmentManager = getFragmentManager();
-	        //fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-	        // update selected item and title, then close the drawer
 	    	if(position==0){
 	    		Intent intent = new Intent(this, LoginActivity.class);
 	    		startActivity(intent);
@@ -371,11 +362,9 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 	    		Log.w("Error", "Drawer Wrong!");
 	    	}
 	        mDrawerList.setItemChecked(position, true);
-	        //setTitle(mPlanetTitles[position]);
 	        mDrawerLayout.closeDrawer(mDrawerList);
 	    }
 	    
-
 	    @Override
 	    protected void onPostCreate(Bundle savedInstanceState) {
 	        super.onPostCreate(savedInstanceState);
@@ -392,7 +381,7 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 	    
 	    
 	    /*
-	     * Google's ArrayAdapter. I have no idea what is this about... I delete part of its code,but it still works fine..
+	     * Google's ArrayAdapter. I have no idea of what is this about... I delete part of its code,but it still works fine..
 	     */
 	    /**
 	     * A ListAdapter that manages a ListView backed by an array of arbitrary
@@ -801,8 +790,6 @@ public class GoogleCardHomeActivity extends Activity implements OnDismissCallbac
 				// TODO Auto-generated method stub
 				return null;
 			}
-
-
 	       
 	        }
 		
