@@ -8,6 +8,9 @@
 package org.ninto.garagemgr;
 
 public final class R {
+    public static final class array {
+        public static final int nav_drawer_icons=0x7f060000;
+    }
     public static final class attr {
     }
     public static final class dimen {
@@ -23,34 +26,38 @@ public final class R {
     public static final class drawable {
         public static final int card_background_white=0x7f020000;
         public static final int drawer_shadow=0x7f020001;
-        public static final int ic_drawer=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
+        public static final int ic_action_accept=0x7f020002;
+        public static final int ic_action_remove=0x7f020003;
+        public static final int ic_drawer=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
     }
     public static final class id {
-        public static final int action_forgot_password=0x7f080015;
-        public static final int action_settings=0x7f080016;
-        public static final int activity_googlecards_card_carnum=0x7f080011;
-        public static final int activity_googlecards_card_cartime=0x7f080012;
-        public static final int activity_googlecards_card_name=0x7f080010;
-        public static final int activity_googlecards_card_number=0x7f080014;
-        public static final int activity_googlecards_card_time=0x7f080013;
-        public static final int activity_googlecards_listview=0x7f080001;
-        public static final int button1=0x7f08000c;
-        public static final int button2=0x7f08000d;
-        public static final int button3=0x7f08000e;
-        public static final int carLogout=0x7f08000b;
-        public static final int carNumber=0x7f080007;
-        public static final int drawer_layout=0x7f080000;
-        public static final int ipAddress=0x7f08000f;
-        public static final int left_drawer=0x7f080002;
-        public static final int login=0x7f080008;
-        public static final int login_form=0x7f080005;
-        public static final int login_status=0x7f080003;
-        public static final int login_status_message=0x7f080004;
-        public static final int name=0x7f080006;
-        public static final int phoneNumber=0x7f080009;
-        public static final int return_to_default=0x7f080017;
-        public static final int sign_in_button=0x7f08000a;
+        public static final int action_forgot_password=0x7f090017;
+        public static final int action_settings=0x7f090018;
+        public static final int activity_googlecards_card_carnum=0x7f090013;
+        public static final int activity_googlecards_card_cartime=0x7f090014;
+        public static final int activity_googlecards_card_name=0x7f090012;
+        public static final int activity_googlecards_card_number=0x7f090016;
+        public static final int activity_googlecards_card_time=0x7f090015;
+        public static final int activity_googlecards_listview=0x7f090001;
+        public static final int button1=0x7f09000c;
+        public static final int button2=0x7f09000d;
+        public static final int button3=0x7f09000e;
+        public static final int carLogout=0x7f09000b;
+        public static final int carNumber=0x7f090007;
+        public static final int drawer_layout=0x7f090000;
+        public static final int icon=0x7f090010;
+        public static final int ipAddress=0x7f09000f;
+        public static final int left_drawer=0x7f090002;
+        public static final int login=0x7f090008;
+        public static final int login_form=0x7f090005;
+        public static final int login_status=0x7f090003;
+        public static final int login_status_message=0x7f090004;
+        public static final int name=0x7f090006;
+        public static final int navText=0x7f090011;
+        public static final int phoneNumber=0x7f090009;
+        public static final int return_to_default=0x7f090019;
+        public static final int sign_in_button=0x7f09000a;
     }
     public static final class layout {
         public static final int activity_googlecards_main=0x7f030000;
@@ -62,9 +69,9 @@ public final class R {
         public static final int googlecards_card=0x7f030006;
     }
     public static final class menu {
-        public static final int login=0x7f070000;
-        public static final int logout=0x7f070001;
-        public static final int main=0x7f070002;
+        public static final int login=0x7f080000;
+        public static final int logout=0x7f080001;
+        public static final int main=0x7f080002;
     }
     public static final class string {
         public static final int Change=0x7f050006;
@@ -116,11 +123,11 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
-        public static final int LoginFormContainer=0x7f060002;
+        public static final int AppTheme=0x7f070001;
+        public static final int LoginFormContainer=0x7f070002;
     }
 }
