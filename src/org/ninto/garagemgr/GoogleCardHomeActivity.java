@@ -1,7 +1,7 @@
 package org.ninto.garagemgr;
 
 /*
- * Copyright 2013 Niek Haarman
+ * Copyright 2014 Huang Ning Tao
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,12 @@ package org.ninto.garagemgr;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* 
- * Copyright (C) 2006 The Android Open Source Project 
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0 
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
- * limitations under the License. 
- */  
-
+  
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +33,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,6 +46,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.Filter; 
  
+
+
 
 import com.nhaarman.listviewanimations.ArrayAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
@@ -100,6 +86,9 @@ public class GoogleCardHomeActivity extends Activity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		ApplicationContainer.getInstance().addActivity(this);
+		
 		setContentView(R.layout.activity_googlecards_main);
 		
 		mTitle = mDrawerTitle = getTitle();
@@ -202,11 +191,18 @@ public class GoogleCardHomeActivity extends Activity {
 		startService(intent);
 	}
 	
+	  
 	@Override
-	protected void onResume() {
-		super.onResume();
-		
-	}
+	 public boolean onKeyDown(int keyCode, KeyEvent event) {
+	  if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 按下的如果是BACK，同时没有重复
+	   Intent home = new Intent(Intent.ACTION_MAIN);
+	   home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	   home.addCategory(Intent.CATEGORY_HOME);
+	   startActivity(home);
+	   ApplicationContainer.getInstance().exit(); 
+	  }
+	  return super.onKeyDown(keyCode, event);
+	 }
 
 	private ArrayList<Integer> getItems() {
 		ArrayList<Integer> items = new ArrayList<Integer>();

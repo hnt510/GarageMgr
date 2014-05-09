@@ -16,4 +16,14 @@
         <item>@drawable/ic_action_accept</item>
         <item>@drawable/ic_action_remove</item>
     </array>
+    
+                <array name="incomming_icons">
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_action_remove</item>
+        </array>
+       
+                        <array name="outcomming_icons">
+        <item>@drawable/ic_home</item>
+        <item>@drawable/ic_action_accept</item>
+    </array>
 </resources>
