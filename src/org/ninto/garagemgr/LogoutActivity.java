@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -113,7 +114,7 @@ public class LogoutActivity extends Activity {
 				PrintWriter out = new PrintWriter(new BufferedWriter(
 						new OutputStreamWriter(socket.getOutputStream())), true);
 				// 填充信息
-				out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+"EOF"+usr.time+"EOF"+"OUT");
+				out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+"EOF"+usr.time+"EOF"+"OUT"+"EOF"+"ENDTRANSMISION");
 				//System.out.println("msg=" + edittext.getText());
 				// 关闭
 				out.close();
@@ -155,6 +156,8 @@ public class LogoutActivity extends Activity {
             					//显示toast信息  
             					toast.show();
                         	}else{
+                        		Intent intent = new Intent(LogoutActivity.this, GoogleCardHomeActivity.class);
+                        		startActivity(intent);
                         		Toast toast=Toast.makeText(getApplicationContext(), "汽车已出库", Toast.LENGTH_SHORT);  
             					//显示toast信息  
             					toast.show();

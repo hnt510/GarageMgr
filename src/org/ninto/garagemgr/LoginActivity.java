@@ -84,7 +84,7 @@ public class LoginActivity extends Activity {
                     }
                     });
                     //jump to HomeActivity
-            		Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            		Intent intent = new Intent(LoginActivity.this, GoogleCardHomeActivity.class);
             		startActivity(intent);
 					try {
 						// 实例化Socket
@@ -100,7 +100,7 @@ public class LoginActivity extends Activity {
 						PrintWriter out = new PrintWriter(new BufferedWriter(
 								new OutputStreamWriter(socket.getOutputStream())), true);
 						// 填充信息
-						out.println(name+"EOF"+carNumber+"EOF"+phoneNumber+"EOF"+time+"EOF"+"IN");
+						out.println(name+"EOF"+carNumber+"EOF"+phoneNumber+"EOF"+time+"EOF"+"INT"+"EOF"+"ENDTRANSMISION");
 						//System.out.println("msg=" + edittext.getText());
 						// 关闭
 						out.close();

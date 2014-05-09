@@ -9,4 +9,6 @@
     <string name="title_activity_logout">汽车出库</string>
 	<string name="Change">改变</string>
 	<string name="cancel_change">取消</string>
+	<string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
