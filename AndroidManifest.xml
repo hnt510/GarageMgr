@@ -24,21 +24,20 @@
         <activity
             android:name="org.ninto.garagemgr.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible">
         </activity>
         <activity
             android:name="org.ninto.garagemgr.LogoutActivity"
-            android:label="@string/title_activity_logout" >
+            android:label="@string/title_activity_logout">
         </activity>  
         <activity
             android:name="org.ninto.garagemgr.GoogleCardHomeActivity"
             android:label="我的车库" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />              
             </intent-filter>
-        </activity>        
+                     </activity>        
         <service android:name=".SocketServer" />
     </application>
 

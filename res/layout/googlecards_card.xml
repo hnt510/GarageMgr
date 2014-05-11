@@ -23,17 +23,25 @@
             android:layout_height="wrap_content"
             android:text="车牌号"
             android:textSize="12sp" />
-
-        <TextView
+        
+                <TextView
+            android:id="@+id/activity_googlecards_card_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/activity_googlecards_card_carnum"
+            android:textSize="12sp" />
+        
+                <TextView
             android:id="@+id/activity_googlecards_card_cartime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="55dp"
+            android:layout_marginLeft="178dp"
             android:text="入库时间"
             android:textSize="12sp" />
-
+                
         <TextView
             android:id="@+id/activity_googlecards_card_time"
             android:layout_width="wrap_content"
@@ -42,14 +50,6 @@
             android:layout_alignParentTop="true"
             android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/activity_googlecards_card_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="13dp"
-            android:layout_toRightOf="@+id/activity_googlecards_card_carnum"
-            android:textSize="12sp" />
 
     </RelativeLayout>
 

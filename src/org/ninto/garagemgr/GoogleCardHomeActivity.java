@@ -21,9 +21,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -32,6 +34,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.LoginFilter.UsernameFilterGeneric;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,9 +46,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-//import android.widget.Filter; 
+import android.widget.Toast; 
  
+
+
+
 
 
 
@@ -60,7 +65,8 @@ public class GoogleCardHomeActivity extends Activity {
 	private static final String NAME = "NAME";
 	private static final String PHONE_NUMBER = "PHONE_NUMBER";
 	private static final String TIME = "TIME";
-	private static final String SERVER_IP="SERVER_IP"; 
+	private static final String SERVER_IP="SERVER_IP";
+	private static final String USER_INFO_DELETED = "org.ninto.garagemgr.action.USER_INFO_DELETED"; 
 	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -74,6 +80,7 @@ public class GoogleCardHomeActivity extends Activity {
 	
 	private GoogleCardsAdapter mGoogleCardsAdapter;
 	private SqlHelper helper;
+	private UserInfoReceiver receiver;
 	public static class User{
 		String name;
 		String phoneNum;
@@ -178,7 +185,7 @@ public class GoogleCardHomeActivity extends Activity {
 		}
 		ListView listView = (ListView) findViewById(R.id.activity_googlecards_listview);
 
-		mGoogleCardsAdapter = new GoogleCardsAdapter(this,userList);
+		mGoogleCardsAdapter = new GoogleCardsAdapter(this);
 		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(mGoogleCardsAdapter);
 		swingBottomInAnimationAdapter.setInitialDelayMillis(300);
 		swingBottomInAnimationAdapter.setAbsListView(listView);
@@ -187,11 +194,20 @@ public class GoogleCardHomeActivity extends Activity {
 
 		mGoogleCardsAdapter.addAll(getItems());
 		
+		registerBroadcastReceiver();
 		Intent intent = new Intent(this, SocketServer.class);
 		startService(intent);
 	}
 	
 	  
+	private void registerBroadcastReceiver() {
+		// TODO Auto-generated method stub
+		receiver = new UserInfoReceiver();
+		IntentFilter filter = new IntentFilter("android.intent.action.USER_INFO_DELETED");
+		registerReceiver(receiver, filter);
+	}
+
+
 	@Override
 	 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	  if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 按下的如果是BACK，同时没有重复
@@ -213,15 +229,13 @@ public class GoogleCardHomeActivity extends Activity {
 	}
 
 
-	private static class GoogleCardsAdapter extends ArrayAdapter<Integer> {
-
-		public ArrayList<User> userList = new ArrayList<User>(); 
+	public class GoogleCardsAdapter extends ArrayAdapter<Integer> {
+ 
 		private final Context mContext;
 		org.ninto.garagemgr.GoogleCardHomeActivity.User usr = new org.ninto.garagemgr.GoogleCardHomeActivity.User();
 		
-		public GoogleCardsAdapter(final Context context,ArrayList List) {
+		public GoogleCardsAdapter(final Context context) {
 			mContext = context;
-			userList=List;
 		}
 
 		@Override
@@ -244,7 +258,12 @@ public class GoogleCardHomeActivity extends Activity {
 			usr=userList.get(getItem(position));
 			viewHolder.nameView.setText(usr.name);
 			viewHolder.numberView.setText(usr.carNum);
-			viewHolder.timeView.setText(usr.time);
+			if(usr.time!="无"){
+			StringBuffer bfr=new StringBuffer(usr.time);
+			bfr.insert(2, "号"); bfr.insert(5, "点"); bfr.append("分");
+			viewHolder.timeView.setText(bfr);}else{
+				viewHolder.timeView.setText(usr.time);
+			}
 			return view;
 		}
 
@@ -360,9 +379,11 @@ public class GoogleCardHomeActivity extends Activity {
 	    	if(position==0){
 	    		Intent intent = new Intent(this, LoginActivity.class);
 	    		startActivity(intent);
+	    		this.finish();
 	    	}else if(position==1){
 	    		Intent intent = new Intent(this, LogoutActivity.class);
 	    		startActivity(intent);
+	    		this.finish();
 	    	}else{
 	    		Log.w("Error", "Drawer Wrong!");
 	    	}
@@ -384,7 +405,32 @@ public class GoogleCardHomeActivity extends Activity {
 	        mDrawerToggle.onConfigurationChanged(newConfig);
 	    }
 	    
-	    
+	    public class UserInfoReceiver extends BroadcastReceiver{
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				// TODO Auto-generated method stub
+			      String action = intent.getAction();
+			        if(action.equals("android.intent.action.USER_INFO_DELETED")){
+			        	String stringUser = intent.getStringExtra("User");
+			        	String [] split=stringUser.split("EOF");
+			        	int position=0;
+			        	for(position=0;!userList.get(position).carNum.equals(split[1]);position++);
+			        	mGoogleCardsAdapter.removeAll(getItems());
+			        	userList.remove(position);
+			        	if(userList.size()==0){
+			        		User usrUser = new User();
+			        		usrUser.name="空的";
+			        		usrUser.carNum="无";
+			        		usrUser.time="无";
+			        		userList.add(usrUser);
+			        	}
+			    		mGoogleCardsAdapter.addAll(getItems());
+			        	//mGoogleCardsAdapter.notifyDataSetChanged();
+			        }
+			}
+	    	
+	    }
 
 	}
 

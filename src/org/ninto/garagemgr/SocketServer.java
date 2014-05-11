@@ -19,11 +19,13 @@ package org.ninto.garagemgr;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+
 import dao.SqlHelper;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -34,6 +36,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -46,16 +49,18 @@ import android.widget.Toast;
  */
 public class SocketServer extends Service{
 	
-	private static final int PORT = 24358; 
+	private static final int PORT = 24358;
 	private Socket clientSocket = null;
     private ServerSocket serverSocket = null;
     private Handler workHandler = new Handler();
     private SqlHelper helper;
     private byte[] msg = new byte[12000];
+    private Intent userinfoIntent = null;  
     
     //User data structure
-    class User{
-        public String NAME;
+    class User {
+
+		public String NAME;
         public String CAR_NUMBER;
         public String PHONE_NUMBER;
         public String TIME;
@@ -207,11 +212,23 @@ public class SocketServer extends Service{
                         	notifyUser(usr);
                         	//delete user info in database
                         	deleteUser(usr.CAR_NUMBER);
+                        	sendUserInfoDeletedBroadcast(usr);
                         }
                     });
                 }
             }
         }
+    
+
+	private void sendUserInfoDeletedBroadcast(User usr) {
+		// TODO Auto-generated method stub
+		userinfoIntent=new Intent("android.intent.action.USER_INFO_DELETED");
+		
+		Bundle bundle= new Bundle();
+		bundle.putString("User", usr.NAME+"EOF"+usr.CAR_NUMBER+"EOF"+usr.PHONE_NUMBER+"EOF"+usr.TIME);
+		userinfoIntent.putExtras(bundle);
+		sendBroadcast(userinfoIntent);
+	}
     
     private User extractUser(String inputString){
         User usr=new User();

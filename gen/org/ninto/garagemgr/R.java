@@ -38,10 +38,10 @@ public final class R {
         public static final int action_forgot_password=0x7f090015;
         public static final int action_settings=0x7f090016;
         public static final int activity_googlecards_card_carnum=0x7f090011;
-        public static final int activity_googlecards_card_cartime=0x7f090012;
+        public static final int activity_googlecards_card_cartime=0x7f090013;
         public static final int activity_googlecards_card_name=0x7f090010;
-        public static final int activity_googlecards_card_number=0x7f090014;
-        public static final int activity_googlecards_card_time=0x7f090013;
+        public static final int activity_googlecards_card_number=0x7f090012;
+        public static final int activity_googlecards_card_time=0x7f090014;
         public static final int activity_googlecards_listview=0x7f090001;
         public static final int button1=0x7f090008;
         public static final int button2=0x7f09000b;

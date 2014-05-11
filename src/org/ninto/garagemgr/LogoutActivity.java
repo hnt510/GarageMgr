@@ -20,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -245,15 +246,15 @@ public class LogoutActivity extends Activity {
         builder.setTitle("总停车费用");  
         //calculate fee
 		if(duration<=60){
-			double fee= duration*0.1;
+			double fee= Number2(duration*0.1);
 			builder.setMessage("您目前已停"+String.valueOf(duration)
 					+"分钟，需要交"+String.valueOf(fee)+"元"); 
 		}else if(duration<=120){
-			double fee = 60*0.1+(duration-60)*0.2;
+			double fee = Number2(60*0.1+(duration-60)*0.2);
 			builder.setMessage("您目前已停"+String.valueOf(duration)
 					+"分钟，需要交"+String.valueOf(fee)+"元"); 
 		}else {
-			double fee = 60*0.1+60*0.2+(duration-120)*0.3;
+			double fee = Number2(60*0.1+60*0.2+(duration-120)*0.3);
 			builder.setMessage("您目前已停"+String.valueOf(duration)
 					+"分钟，需要交"+String.valueOf(fee)+"元");
 		} 
@@ -326,5 +327,15 @@ public class LogoutActivity extends Activity {
 		getMenuInflater().inflate(R.menu.logout, menu);
 		return true;
 	}
+	
+	public double Number2(double pDouble) 
+	{ 
+	   BigDecimal bd=new BigDecimal(pDouble); 
+	   BigDecimal bd1=bd.setScale(2,bd.ROUND_HALF_UP); 
+	   pDouble=bd1.doubleValue(); 
+	   long ll = Double.doubleToLongBits(pDouble); 
+	  
+	   return pDouble; 
+	} 
 
 }
