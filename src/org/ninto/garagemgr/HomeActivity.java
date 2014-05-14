@@ -28,11 +28,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * main user interface
+ * discarded,user should never see this activity
  * @author ninteo
  *
  */

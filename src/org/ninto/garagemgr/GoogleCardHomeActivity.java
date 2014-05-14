@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.text.LoginFilter.UsernameFilterGeneric;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -48,17 +47,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast; 
  
-
-
-
-
-
-
 import com.nhaarman.listviewanimations.ArrayAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 
 import dao.SqlHelper;
-
+/**
+ * main user interface
+ * @author ninteo
+ *
+ */
 public class GoogleCardHomeActivity extends Activity {
 
 	private static final String CAR_NUMBER = "CAR_NUMBER";
@@ -66,7 +63,6 @@ public class GoogleCardHomeActivity extends Activity {
 	private static final String PHONE_NUMBER = "PHONE_NUMBER";
 	private static final String TIME = "TIME";
 	private static final String SERVER_IP="SERVER_IP";
-	private static final String USER_INFO_DELETED = "org.ninto.garagemgr.action.USER_INFO_DELETED"; 
 	
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -201,7 +197,6 @@ public class GoogleCardHomeActivity extends Activity {
 	
 	  
 	private void registerBroadcastReceiver() {
-		// TODO Auto-generated method stub
 		receiver = new UserInfoReceiver();
 		IntentFilter filter = new IntentFilter("android.intent.action.USER_INFO_DELETED");
 		registerReceiver(receiver, filter);
@@ -301,14 +296,12 @@ public class GoogleCardHomeActivity extends Activity {
 		}
 		
 		private void clearPreference() {
-			// TODO Auto-generated method stub
 	 	   SharedPreferences settings = getSharedPreferences("ip_setting", 0);
 	 	   SharedPreferences.Editor editor = settings.edit();
 	 	   editor.clear().commit();
 		}
 		
 		private void popIpDialog(Context context) {
-			// TODO Auto-generated method stub
 		    AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		    builder.setTitle("改变服务端IP地址");  
 		    builder.setMessage("输入服务端IP地址");
@@ -409,7 +402,6 @@ public class GoogleCardHomeActivity extends Activity {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				// TODO Auto-generated method stub
 			      String action = intent.getAction();
 			        if(action.equals("android.intent.action.USER_INFO_DELETED")){
 			        	String stringUser = intent.getStringExtra("User");
@@ -429,8 +421,6 @@ public class GoogleCardHomeActivity extends Activity {
 			        	//mGoogleCardsAdapter.notifyDataSetChanged();
 			        }
 			}
-	    	
 	    }
-
 	}
 

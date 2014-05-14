@@ -31,11 +31,14 @@ import java.util.List;
 import util.AppUtil;
 import dao.SqlHelper;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -77,6 +80,7 @@ public class LogoutActivity extends Activity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 	
+	private ConfirmationReceiver receiver;
 	private EditText carNumberView;
 	private SqlHelper helper;
 	private String host=null;
@@ -156,10 +160,18 @@ public class LogoutActivity extends Activity {
             //selectItem(0);
         }
 		
+        registerBroadcastReceiver();
 		helper = new SqlHelper(this, 0); 
 	}
 
 	  
+	private void registerBroadcastReceiver() {
+		receiver = new ConfirmationReceiver();
+		IntentFilter filter = new IntentFilter("android.intent.action.DELETE_CONFIRM");
+		registerReceiver(receiver, filter);
+	}
+
+
 	@Override
 	 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	  if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 按下的如果是BACK，同时没有重复
@@ -173,6 +185,7 @@ public class LogoutActivity extends Activity {
 	 }
 	
 	//button onclick
+	@SuppressLint("SimpleDateFormat")
 	public void checkUserFee(View view){
 		carNumberView=(EditText)findViewById(R.id.carLogout);
 		String carNumber=carNumberView.getText().toString();
@@ -187,12 +200,11 @@ public class LogoutActivity extends Activity {
 					usr.name=cur.getString(NAME_COLUMN_INDEX);
 					usr.carNum=cur.getString(CARNUM__COLUMN_INDEX);
 					usr.phoneNum=cur.getString(PHONENUM_COLUMN_INDEX);
-					usr.time = cur.getString(TIME_COLUMN_INDEX);					
-					//calculate parking time
-					int duration=AppUtil.convertTime(new SimpleDateFormat("ddHHmm").format(new Date())) 
-							- AppUtil.convertTime(usr.time);
-					//logout dialog
-					showFeeDialog(LogoutActivity.this, duration, usr.carNum);
+					usr.time = cur.getString(TIME_COLUMN_INDEX);
+					new Thread(new SendRunnable("OUTREQ")).start();
+					Toast toast=Toast.makeText(getApplicationContext(), "等待服务端确认出库中...", Toast.LENGTH_SHORT);  
+					//显示toast信息  
+					toast.show(); 
 				}catch(Exception e){
 					Toast toast=Toast.makeText(getApplicationContext(), "未找到该车主信息", Toast.LENGTH_SHORT);  
 					//显示toast信息  
@@ -207,36 +219,52 @@ public class LogoutActivity extends Activity {
 	}
 	
 	public class SendRunnable implements Runnable{
-
+		
+		String sendType; 
+		Socket socket = null;
+		public SendRunnable(String type){
+			sendType=type;
+		}
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			try {
 				// 实例化Socket
-				Socket socket = null;
+
 				if(host=="NOT EXIST"){
 					socket = new Socket(DEFAULT_HOST, PORT);
 				}else{
 					socket = new Socket(host, PORT);
 				}
-				// 创建socket对象，指定服务器端地址和端口号
-				//socket = new Socket(IpAddress, Port);
-				// 获取 Client 端的输出流
-				PrintWriter out = new PrintWriter(new BufferedWriter(
+				if(sendType.equals("OUTREQ")){
+					PrintWriter out = new PrintWriter(new BufferedWriter(
+							new OutputStreamWriter(socket.getOutputStream())), true);
+					out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+
+							"EOF"+usr.time+"EOF"+"OUTREQ"+"EOF"+"ENDTRANSMISION");
+					out.close();
+				}else{
+					PrintWriter out = new PrintWriter(new BufferedWriter(
 						new OutputStreamWriter(socket.getOutputStream())), true);
 				// 填充信息
-				out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+"EOF"+usr.time+"EOF"+"OUT"+"EOF"+"ENDTRANSMISION");
+					out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+
+							"EOF"+usr.time+"EOF"+"OUT"+"EOF"+"ENDTRANSMISION");
+					out.close();
+				}
 				//System.out.println("msg=" + edittext.getText());
 				// 关闭
-				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				try {
+					socket.shutdownOutput();
+					socket.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			try {
 				socket.shutdownOutput();
 				socket.close();
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
 		
@@ -273,7 +301,7 @@ public class LogoutActivity extends Activity {
             					//显示toast信息  
             					toast.show();
                         	}
-                    		new Thread(new SendRunnable()).start();
+                    		new Thread(new SendRunnable("OUT")).start();
                     }  
                 });  
         //do nothing
@@ -328,13 +356,31 @@ public class LogoutActivity extends Activity {
 		return true;
 	}
 	
+    public class ConfirmationReceiver extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if(action.equals("android.intent.action.DELETE_CONFIRM")){
+	        	String stringUser = intent.getStringExtra("User");
+	        	String [] split=stringUser.split("EOF");
+	        	String time = split[3];
+	        	int duration=AppUtil.convertTime(new SimpleDateFormat("ddHHmm").format(new Date())) 
+						- AppUtil.convertTime(time);
+	        	showFeeDialog(LogoutActivity.this, duration, split[1]);
+			}
+		}
+    	
+    }
+	
 	public double Number2(double pDouble) 
 	{ 
 	   BigDecimal bd=new BigDecimal(pDouble); 
-	   BigDecimal bd1=bd.setScale(2,bd.ROUND_HALF_UP); 
+	   @SuppressWarnings("static-access")
+	BigDecimal bd1=bd.setScale(2,bd.ROUND_HALF_UP); 
 	   pDouble=bd1.doubleValue(); 
-	   long ll = Double.doubleToLongBits(pDouble); 
-	  
+	   @SuppressWarnings("unused")
+	long ll = Double.doubleToLongBits(pDouble); 	  
 	   return pDouble; 
 	} 
 

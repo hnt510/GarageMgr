@@ -19,7 +19,6 @@ package org.ninto.garagemgr;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -76,15 +75,14 @@ public class SocketServer extends Service{
 
 
     public void startUdpServer() {
-		// TODO Auto-generated method stub
     	new Thread(new UdpRunnable()).start();
 	}
 
     public class UdpRunnable implements Runnable{
 
+		@SuppressWarnings("resource")
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			DatagramSocket dSocket = null;
 			DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
 			String inputString = null;
@@ -102,12 +100,9 @@ public class SocketServer extends Service{
 
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								deleteUser(carNum);
-							}
-							
+							}	
 						});
-
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -144,9 +139,7 @@ public class SocketServer extends Service{
         
     }
     
-    /*
-     * Accept
-     */
+    //Accept
     public class AcceptRunnable implements Runnable {
         @Override
         public void run() {
@@ -202,26 +195,36 @@ public class SocketServer extends Service{
                         	try {
                         		clientSocket.close();
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
                         	
                             User usr=new User();
-                        	usr = extractUser(inputString);
-                        	//show notification
-                        	notifyUser(usr);
-                        	//delete user info in database
-                        	deleteUser(usr.CAR_NUMBER);
-                        	sendUserInfoDeletedBroadcast(usr);
+                            usr = extractUser(inputString);
+                            String [] split=inputString.split("EOF");
+                            if(split[4].equals("CONFIRM")){
+                            	
+                            	sendConfirmationBroadcast(usr);
+                            }else{
+                            	//show notification
+                            	notifyUser(usr);
+                            	//delete user info in database
+                            	deleteUser(usr.CAR_NUMBER);
+                            	sendUserInfoDeletedBroadcast(usr);}
                         }
                     });
                 }
             }
         }
     
-
+    private void sendConfirmationBroadcast(User usr){
+    	userinfoIntent=new Intent("android.intent.action.DELETE_CONFIRM");
+		Bundle bundle= new Bundle();
+		bundle.putString("User", usr.NAME+"EOF"+usr.CAR_NUMBER+"EOF"+usr.PHONE_NUMBER+"EOF"+usr.TIME);
+		userinfoIntent.putExtras(bundle);
+		sendBroadcast(userinfoIntent);
+    }
+    
 	private void sendUserInfoDeletedBroadcast(User usr) {
-		// TODO Auto-generated method stub
 		userinfoIntent=new Intent("android.intent.action.USER_INFO_DELETED");
 		
 		Bundle bundle= new Bundle();
@@ -229,7 +232,7 @@ public class SocketServer extends Service{
 		userinfoIntent.putExtras(bundle);
 		sendBroadcast(userinfoIntent);
 	}
-    
+	
     private User extractUser(String inputString){
         User usr=new User();
     	//extract user info
@@ -245,7 +248,6 @@ public class SocketServer extends Service{
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@SuppressLint("NewApi")
 	private void notifyUser(User usr) {
-		// TODO Auto-generated method stub
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
@@ -258,15 +260,13 @@ public class SocketServer extends Service{
 		
 		inboxStyle.addLine("车主 "+usr.NAME+" 车牌号 "+usr.CAR_NUMBER+" 的用户已经出库！");
 		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, HomeActivity.class);
+		Intent resultIntent = new Intent(this, GoogleCardHomeActivity.class);
 
 		// The stack builder object will contain an artificial back stack for the
 		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(HomeActivity.class);
+		stackBuilder.addParentStack(GoogleCardHomeActivity.class);
 		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent =
@@ -283,7 +283,6 @@ public class SocketServer extends Service{
 	}
 	
 	private void deleteUser(String carNum) {
-		// TODO Auto-generated method stub
     	if(helper.delete(carNum)==0){
 			Toast toast=Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT);  
 			//显示toast信息  
@@ -297,7 +296,6 @@ public class SocketServer extends Service{
     
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

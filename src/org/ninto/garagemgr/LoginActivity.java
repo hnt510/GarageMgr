@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
-
 import util.SendSMSTask;
 import dao.*;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -166,6 +166,7 @@ public class LoginActivity extends Activity {
 	 * button onclick saving things
 	 * @param view
 	 */
+	@SuppressLint("SimpleDateFormat")
 	public void saveInfo(View view){
 		//extract 4 values
 		nameView=(EditText)findViewById(R.id.name);
@@ -175,8 +176,14 @@ public class LoginActivity extends Activity {
 		final String carNumber=carNumberView.getText().toString();
 		
 		phoneNumberView=(EditText)findViewById(R.id.phoneNumber);
+
 		final String phoneNumber=phoneNumberView.getText().toString();
-		
+		if(name.equals("")||carNumber.equals("")||phoneNumber.equals("")){
+			Toast toast=Toast.makeText(getApplicationContext(), "输入的信息不能为空", Toast.LENGTH_SHORT);  
+			//显示toast信息  
+			toast.show();
+			return;
+		}
 		final String time=new SimpleDateFormat("ddHHmm").format(new Date());
 
 		final Handler mHandler = new Handler();
@@ -218,10 +225,8 @@ public class LoginActivity extends Activity {
 						socket.shutdownOutput();
 						socket.close();
 					} catch (UnknownHostException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}else{
@@ -237,7 +242,6 @@ public class LoginActivity extends Activity {
 		};
 		Thread thread = new Thread(doBackGroundOperation,"BackGroundOperation");
 		thread.start();
-
 	}
 	
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

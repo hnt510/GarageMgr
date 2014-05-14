@@ -26,7 +26,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+/**
+ * Navigation Drawer List Adapter
+ * @author ninteo
+ *
+ */
 public class NavDrawerListAdapter extends BaseAdapter {
 	
 	private Context context;

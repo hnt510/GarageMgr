@@ -15,7 +15,11 @@ package org.ninto.garagemgr;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+ * Navigation Drawer List Item
+ * @author ninteo
+ *
+ */
 public class NavDrawerItem {
 	private String title;
 	private int icon;

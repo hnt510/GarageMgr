@@ -19,6 +19,7 @@
                 android:layout_height="wrap_content"
                 android:maxLength="13"
                 android:hint="@string/prompt_name" />
+                    <requestFocus />
 
             <Button
                 android:id="@+id/sign_in_button"
