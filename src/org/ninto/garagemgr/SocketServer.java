@@ -240,7 +240,7 @@ public class SocketServer extends Service{
     	usr.NAME=split[0];
     	usr.CAR_NUMBER=split[1];
     	usr.PHONE_NUMBER=split[2];
-    	usr.TIME=split[3].substring(0, 6);
+    	usr.TIME=split[3];
     	return usr;
     	
     }
