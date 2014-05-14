@@ -16,7 +16,9 @@ GarageMgr
 
 5.汽车出库，车主数据删除(worked)
 
-6.电脑和客户端互相控制(finished but haven't been tested)
+6.电脑和客户端互相控制(worked)
+
+7.Google Card UI(finished)
 
 实现方法
 =======
