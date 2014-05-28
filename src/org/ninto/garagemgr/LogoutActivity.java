@@ -164,6 +164,11 @@ public class LogoutActivity extends Activity {
 		helper = new SqlHelper(this, 0); 
 	}
 
+	@Override
+	public void onStop(){
+		super.onStop();
+		//unregisterReceiver(receiver);
+	}
 	  
 	private void registerBroadcastReceiver() {
 		receiver = new ConfirmationReceiver();
@@ -221,7 +226,6 @@ public class LogoutActivity extends Activity {
 	public class SendRunnable implements Runnable{
 		
 		String sendType; 
-		Socket socket = null;
 		public SendRunnable(String type){
 			sendType=type;
 		}
@@ -229,7 +233,7 @@ public class LogoutActivity extends Activity {
 		public void run() {
 			try {
 				// ÊµÀý»¯Socket
-
+				Socket socket = null;
 				if(host=="NOT EXIST"){
 					socket = new Socket(DEFAULT_HOST, PORT);
 				}else{
@@ -248,23 +252,13 @@ public class LogoutActivity extends Activity {
 					out.println(usr.name+"EOF"+usr.carNum+"EOF"+usr.phoneNum+
 							"EOF"+usr.time+"EOF"+"OUT"+"EOF"+"ENDTRANSMISION");
 					out.close();
+					socket.shutdownOutput();
+					socket.close();
 				}
 				//System.out.println("msg=" + edittext.getText());
 				// ¹Ø±Õ
 			} catch (Exception e) {
 				e.printStackTrace();
-				try {
-					socket.shutdownOutput();
-					socket.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-			try {
-				socket.shutdownOutput();
-				socket.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
 			}
 		}
 		

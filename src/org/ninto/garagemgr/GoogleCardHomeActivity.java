@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,6 +48,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast; 
  
+
 import com.nhaarman.listviewanimations.ArrayAdapter;
 import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 
@@ -192,10 +194,34 @@ public class GoogleCardHomeActivity extends Activity {
 		
 		registerBroadcastReceiver();
 		Intent intent = new Intent(this, SocketServer.class);
-		startService(intent);
+		if(!isServiceRunning(GoogleCardHomeActivity.this,"SocketServer"))
+			startService(intent);
+	}
+		  
+	@Override
+	public void onStop(){
+		super.onStop();
+		//unregisterReceiver(receiver);
 	}
 	
-	  
+    public boolean isServiceRunning(Context context,String className) {        
+        
+        boolean isRunning = false;
+        ActivityManager activityManager = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE); 
+        List<ActivityManager.RunningServiceInfo> serviceList = activityManager.getRunningServices(Integer.MAX_VALUE); 
+        if (!(serviceList.size()>0)) {
+            return false;
+        }    
+        for (int i=0; i<serviceList.size(); i++) {     
+            if (serviceList.get(i).service.getClassName().equals(className) == true) {    
+                isRunning = true;    
+                break;    
+            }    
+        }    
+        Log.i("Serivce stats:","service is running?=="+isRunning);  
+        return isRunning;  
+    }
+	
 	private void registerBroadcastReceiver() {
 		receiver = new UserInfoReceiver();
 		IntentFilter filter = new IntentFilter("android.intent.action.USER_INFO_DELETED");
